@@ -5,7 +5,6 @@
 	use app\core\Registry;
 
 	class Router {
-
 		private static $router = [];
 		private $basePath;
 
@@ -42,11 +41,10 @@
 		}
 
 		public function map() {
-			$checkRoute = false;
 			$params = [];
+			$checkRoute = false;
 			$requestURL = $this->getRequestURL();
 			$requestMethod = $this->getRequestMethod();
-
 			$routers = self::$router;
 
 			foreach ($routers as $route) {
@@ -58,7 +56,7 @@
 
 				if ($url === '*') {
 					$checkRoute = true;
-				} elseif(strpos($url, ':') === FALSE) {
+				} elseif (strpos($url, ':') === FALSE) {
 					if (strcmp(strtolower($url), strtolower($requestURL)) === 0) {
 						$checkRoute = true;
 					} else {
@@ -67,11 +65,9 @@
 				} else {
 					$routeParams = explode('/', $url);
 					$requestParams = explode('/', $requestURL);
-
 					if (count($routeParams) !== count($requestParams)) {
 						continue;
 					}
-
 					foreach ($routeParams as $k => $rp) {
 						if (preg_match('/^:\w+$/', $rp)) {
 							$params[] = $requestParams[$k];
@@ -89,7 +85,6 @@
 					return;
 				}
 			}
-
 			return;
 		}
 
@@ -102,7 +97,6 @@
 
 			$className = $data[0];
 			$methodName = $data[1];
-
 			$classNamespace = 'app\\module\\'.$module.'\\'.$className;
 
 			if (class_exists($classNamespace) && method_exists($classNamespace, $methodName)) {
@@ -110,8 +104,6 @@
 				Registry::getIntance()->controller = $className; 
 				Registry::getIntance()->action = $methodName;
 				Registry::getIntance()->module = $module;
-				// App::setModule($module);
-
 				call_user_func_array([$object, $methodName], $params);
 			} else {
 				die('Class <strong>'.$classNamespace.'</strong> or Method <strong>'.$methodName.'()</strong> not found');

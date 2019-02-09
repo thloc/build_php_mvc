@@ -32,7 +32,6 @@
 
 			if ($this->layout !== null) {
 				$layoutPath = $rootDir.'/app/module/'.$this->layout.'.php';
-
 				if (file_exists($layoutPath)) {
 					require($layoutPath);
 				}
