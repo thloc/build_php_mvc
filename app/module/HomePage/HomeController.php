@@ -1,26 +1,19 @@
 <?php 
-	namespace app\module\HomePage;
-	use app\core\BaseController;
-	use \App;
-
 	/**
 	 * HomePage
 	 */
-	class HomeController extends BaseController {
-		
-		function __construct() {
-			// emty;
-		}
+	namespace app\module\HomePage;
 
-		// public function index($a, $b) {
-		// 	echo $a;
-		// 	echo $b;
-		// }
+	use app\core\BaseController;
+	use \App;
+
+	class HomeController extends BaseController {
+		function __construct() {
+			parent::__construct();
+		}
 	
 		public function index() {
-			$this->render('HomeView');
-			// $this->redirect('http://google.com');
-			// print_r(App::getAction());
+			$this->render('HomeView', ['num01' => 1, 'num02' => 2]);
 		}
 	}
 

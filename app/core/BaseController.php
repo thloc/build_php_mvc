@@ -3,6 +3,7 @@
 	 * BaseController
 	 */
 	namespace app\core;
+
 	use \App;
 
 	class BaseController {
@@ -23,24 +24,45 @@
 		}
 
 		public function render($view, $data = null) {
-			$controller = App::getController();
-			$fileView = str_replace('Controller', 'View', $controller);
-
-			if ($fileView !== $view) {
-				die('Check view filename');
-			}
-
 			$rootDir = App::getConfig()['rootDir'];
-			$module = App::getModule();
-			$viewPath = $rootDir.'/app/module/'.$module.'/'.$fileView.'.php';
+			$content = $this->getViewContent($view, $data);
 
-			if (file_exists($viewPath)) {
-				require($viewPath);
+			if ($this->layout !== null) {
+				$layoutPath = $rootDir.'/app/module/'.$this->layout.'.php';
+
+				if (file_exists($layoutPath)) {
+					require($layoutPath);
+				}
 			}
 		}
 
 		public function renderPartial() {
 
+		}
+
+		public function getViewContent($view, $data) {
+			$controller = App::getController();
+			$fileView = str_replace('Controller', 'View', $controller);
+			$rootDir = App::getConfig()['rootDir'];
+			$module = App::getModule();
+
+			if ($fileView !== $view) {
+				die('Check view filename');
+			}
+
+			if (is_array($data)) {
+				extract($data, EXTR_PREFIX_SAME, 'data');
+			} else {
+				$data = $data;
+			}
+
+			$viewPath = $rootDir.'/app/module/'.$module.'/'.$fileView.'.php';
+
+			if (file_exists($viewPath)) {
+				ob_start();
+				require($viewPath);
+				return ob_get_clean();
+			}
 		}
 	}
 ?>
