@@ -26,20 +26,20 @@
 			return $method;
 		}
 
-		private static function addRouter($method, $url, $action) {
-			self::$router[] = [$method, $url, $action];
+		private static function addRouter($method, $url, $action, $module) {
+			self::$router[] = [$method, $url, $action, $module];
 		}
 
-		public static function get($url, $action) {
-			self::addRouter('GET', $url, $action);
+		public static function get($url, $action, $module = null) {
+			self::addRouter('GET', $url, $action, $module);
 		}
 
-		public static function post($url, $action) {
-			self::addRouter('POST', $url, $action);
+		public static function post($url, $action, $module = null) {
+			self::addRouter('POST', $url, $action, $module);
 		}
 
-		public static function any($url, $action) {
-			self::addRouter('GET|POST', $url, $action);
+		public static function any($url, $action, $module = null) {
+			self::addRouter('GET|POST', $url, $action, $module);
 		}
 
 		public function map() {
@@ -51,7 +51,7 @@
 			$routers = self::$router;
 
 			foreach ($routers as $route) {
-				list($method, $url, $action) = $route;
+				list($method, $url, $action, $module) = $route;
 
 				if (strpos($method, $requestMethod) === FALSE) {
 					continue;
@@ -85,7 +85,7 @@
 					if (is_callable($action)) {
 						call_user_func_array($action, $params);
 					} elseif (is_string($action)) {
-						$this->compieRoute($action, $params);
+						$this->compieRoute($action, $params, $module);
 					}
 					return;
 				}
@@ -94,7 +94,7 @@
 			return;
 		}
 
-		private function compieRoute($action, $params) {
+		private function compieRoute($action, $params, $module) {
 			$data = explode('@', $action);
 
 			if (count($data) !== 2) {
@@ -104,10 +104,14 @@
 			$className = $data[0];
 			$methodName = $data[1];
 
-			$classNamespace = 'app\\HomePage\\'.$className;
+			$classNamespace = 'app\\module\\'.$module.'\\'.$className;
 
 			if (class_exists($classNamespace) && method_exists($classNamespace, $methodName)) {
 				$object = new $classNamespace;
+				App::setController($className);
+				App::setAction($methodName);
+				App::setModule($module);
+
 				call_user_func_array([$object, $methodName], $params);
 			} else {
 				die('Class <strong>'.$classNamespace.'</strong> or Method <strong>'.$methodName.'()</strong> not found');
