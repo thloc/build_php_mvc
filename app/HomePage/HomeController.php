@@ -10,10 +10,15 @@
 			// emty;
 		}
 
-		public function index($a, $b) {
-			echo 'index';
-			echo $a;
-			echo $b;
+		// public function index($a, $b) {
+		// 	echo 'index';
+		// 	echo $a;
+		// 	echo $b;
+		// }
+		// 
+		
+		public function index() {
+			echo 'Home index';
 		}
 	}
 
