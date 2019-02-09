@@ -5,12 +5,15 @@
 	namespace app\core;
 
 	use \App;
+	use app\core\Registry;
 
 	class BaseController {
 		private $layout = null;
+		private $config;
 		
 		function __construct() {
-			$this->layout = App::getConfig()['layout'];
+			$this->config = Registry::getIntance()->config;
+			$this->layout = $this->config['layout'];
 		}
 
 		private function setLayout($layout) {
@@ -24,7 +27,7 @@
 		}
 
 		public function render($view, $data = null) {
-			$rootDir = App::getConfig()['rootDir'];
+			$rootDir = $this->config['rootDir'];
 			$content = $this->getViewContent($view, $data);
 
 			if ($this->layout !== null) {
@@ -37,7 +40,7 @@
 		}
 
 		public function renderPartial($view , $data = null) {
-			$rootDir = App::getConfig()['rootDir'];
+			$rootDir = $this->config['rootDir'];
 
 			if (is_array($data)) {
 				extract($data, EXTR_PREFIX_SAME, 'data');
@@ -52,10 +55,10 @@
 		}
 
 		public function getViewContent($view, $data) {
-			$controller = App::getController();
+			$controller = Registry::getIntance()->controller;
 			$fileView = str_replace('Controller', 'View', $controller);
-			$rootDir = App::getConfig()['rootDir'];
-			$module = App::getModule();
+			$rootDir = $this->config['rootDir'];
+			$module = Registry::getIntance()->module;
 
 			if (is_array($data)) {
 				extract($data, EXTR_PREFIX_SAME, 'data');

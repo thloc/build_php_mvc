@@ -2,6 +2,8 @@
 	/**
 	 * Router
 	 */
+	use app\core\Registry;
+
 	class Router {
 
 		private static $router = [];
@@ -12,11 +14,8 @@
 		}
 
 		private function getRequestURL() {
-			$basePath = \App::getConfig()['basePath'];
-
 			$url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
 			$url = str_replace($this->basePath, '', $url);
-
 			$url = $url === '' || empty($url) ? '/' : $url;
 			return $url;  
 		}
@@ -107,10 +106,11 @@
 			$classNamespace = 'app\\module\\'.$module.'\\'.$className;
 
 			if (class_exists($classNamespace) && method_exists($classNamespace, $methodName)) {
-				$object = new $classNamespace;
-				App::setController($className);
-				App::setAction($methodName);
-				App::setModule($module);
+				$object = new $classNamespace;			
+				Registry::getIntance()->controller = $className; 
+				Registry::getIntance()->action = $methodName;
+				Registry::getIntance()->module = $module;
+				// App::setModule($module);
 
 				call_user_func_array([$object, $methodName], $params);
 			} else {
