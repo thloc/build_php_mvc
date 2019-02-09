@@ -36,8 +36,19 @@
 			}
 		}
 
-		public function renderPartial() {
+		public function renderPartial($view , $data = null) {
+			$rootDir = App::getConfig()['rootDir'];
 
+			if (is_array($data)) {
+				extract($data, EXTR_PREFIX_SAME, 'data');
+			} else {
+				$data = $data;
+			}
+
+			$viewPath = $rootDir.'/app/module/'.$view.'.php';
+			if (file_exists($viewPath)) {
+				require($viewPath);
+			}
 		}
 
 		public function getViewContent($view, $data) {
@@ -46,17 +57,17 @@
 			$rootDir = App::getConfig()['rootDir'];
 			$module = App::getModule();
 
-			if ($fileView !== $view) {
-				die('Check view filename');
-			}
-
 			if (is_array($data)) {
 				extract($data, EXTR_PREFIX_SAME, 'data');
 			} else {
 				$data = $data;
 			}
 
-			$viewPath = $rootDir.'/app/module/'.$module.'/'.$fileView.'.php';
+			if ($module) {
+				$viewPath = $rootDir.'/app/module/'.$module.'/'.$fileView.'.php';
+			} else {
+				$viewPath = $rootDir.'/app/module/layout/'.$view.'.php';
+			}
 
 			if (file_exists($viewPath)) {
 				ob_start();

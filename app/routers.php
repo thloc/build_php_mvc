@@ -1,6 +1,9 @@
 <?php
+	use app\core\BaseController;
+
 	Router::get('/',function() {
-		echo 'hello';
+		$ct = new BaseController();
+		$ct->render('main');
 	});
 
 	Router::get('/home', 'HomeController@index', 'HomePage');
