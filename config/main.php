@@ -3,11 +3,12 @@
 		'basePath' => '/local_mvc/public',
 		'rootDir' => dirname(__DIR__),
 		'layout' => 'index',
-		'db' => [
+		'database' => [
 			'host' => '127.0.0.1',
-			'port' => '',
-			'user' => 'root',
-			'password' => ''
+			'dbname' => 'demo_mvc',
+			'username' => 'root',
+			'password' => '',
+			'charset' => 'utf8',
 		]
 	];
 ?>

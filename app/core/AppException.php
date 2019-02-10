@@ -1,24 +1,24 @@
 <?php
-	/**
-	 * AppException
-	 */
-	namespace app\core;
-	
-	use \Exception;
+/**
+ * AppException
+ */
+namespace app\core;
 
-	class AppException extends Exception {
-		public function __construct($message, $code = null) {
-			if ( error_reporting() == 0 ) {
-				return false;
-			}
+use \Exception;
 
-			set_exception_handler([$this, 'errorHandle']);
-			parent::__construct($message, $code);
+class AppException extends Exception {
+	public function __construct($message, $code = null) {
+		if ( error_reporting() == 0 ) {
+			return false;
 		}
 
-		public function errorHandle($e) {
-			echo "<pre>";
-			print_r($e);
-		}
+		set_exception_handler([$this, 'errorHandle']);
+		parent::__construct($message, $code);
 	}
+
+	public function errorHandle($e) {
+		echo "<pre>";
+		print_r($e);
+	}
+}
 ?>
