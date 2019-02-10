@@ -11,6 +11,7 @@ class BaseModel extends DBConnect {
 	private $from;
 	private $distinct = false;
 	private $query;
+	private $where;
 
 	public function __construct($tableName)	{
 		parent::__construct();
@@ -31,7 +32,7 @@ class BaseModel extends DBConnect {
 		return $this;
 	}
 
-	public function sqlQuery($sqlQuery) {
+	public function sqlQuery($sqlQuery = null) {
 		$this->query = $sqlQuery;
 		return $this;
 	}
@@ -57,63 +58,63 @@ class BaseModel extends DBConnect {
 			return false;
 		}
 
-        if (! is_array(reset($params))) {
-            $params = [$params];
-        } else {
-            foreach ($params as $key => $value) {
-                ksort($value);
-                $params[$key] = $value;
-            }
-        }
-
-        $sql = $this->compileInsert($params);
-
-		echo "<pre>";
-		print_r($sql);
-		die;
+		if (! is_array(reset($params))) {
+			$params = [$params];
+		} else {
+			foreach ($params as $key => $value) {
+			ksort($value);
+			$params[$key] = $value;
+			}
+		}
+		$sql = $this->compileInsert($params);
+		return $this->selectQuery($sql);
 	}
 
 
 	public function compileInsert(array $values) {
-	    if (! is_array(reset($values))) {
-	        $values = [$values];
-	    }
+		if (! is_array(reset($values))) {
+			$values = [$values];
+		}
 
-	    $columns = $this->columnize(array_keys(reset($values)));
-	    $parameters = $this->parameterize($values);
-	    return "INSERT INTO $this->from ($columns) values $parameters";
+		$columns = $this->columnize(array_keys(reset($values)));
+		$parameters = $this->parameterize($values);
+		return "INSERT INTO $this->from ($columns) values $parameters";
 	}
 
 	public function columnize(array $columns) {
-        return implode(', ', $columns);
-    }
+		return implode(', ', $columns);
+	}
 
-    public function parameterize(array $values) {
-    	$dataInsert = '';
-    	$countValues = count($values);
+	public function parameterize(array $values) {
+		$dataInsert = '';
+		$countValues = count($values);
 
-    	foreach ($values as $keyRecord => $record) {
-    		$data = array_values($record);
-    		$dataInsert .= '(';
-    		$countData = count($data);
-    		foreach ($data as $key => $value) {
-    			if (is_string($value)) {
-    				$dataInsert .= '"'.$value.'"';
-    			} else {
-    				$dataInsert .= $value;
-    			}
+		foreach ($values as $keyRecord => $record) {
+			$data = array_values($record);
+			$dataInsert .= '(';
+			$countData = count($data);
+			foreach ($data as $key => $value) {
+				if (is_string($value)) {
+					$dataInsert .= '"'.$value.'"';
+				} else {
+					$dataInsert .= $value;
+				}
 
-    			if ($key < $countData - 1) {
-    				$dataInsert .= ', ';
-    			}
-    		}
-    		$dataInsert .= ')';
+				if ($key < $countData - 1) {
+					$dataInsert .= ', ';
+				}
+			}
+			$dataInsert .= ')';
 
-    		if ($keyRecord < $countValues - 1) {
-    			$dataInsert .= ', ';
-    		}
-    	}
-    	return $dataInsert;
-    }
+			if ($keyRecord < $countValues - 1) {
+				$dataInsert .= ', ';
+			}
+		}
+		return $dataInsert;
+	}
+
+	public function updateDB($sqlQueryUpdate = null) {
+		return;
+	}
 }
 ?>

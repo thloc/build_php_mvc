@@ -9,13 +9,15 @@ class HomeModel extends BaseModel {
 	}
 
 	public function getInfor() {
-		// $user = BaseModel::table('user')->distinct()->select('id', 'user_name')->get();
+		// $user = BaseModel::table('user')->distinct()->select('id', 'user_name')->sqlQuery()->get();
 		
 		// $user = BaseModel::table('user')
 		// 	->insertDB([
-		// 		['id' => 3, 'user_name' => 'john@example.com'],
-		// 		['id' => 4, 'user_name' => 'john04@example.com']
+		// 		['id' => 8, 'user_name' => 'john@example.com'],
+		// 		['id' => 9, 'user_name' => 'john04@example.com']
 		// 	]);
+		
+		// $user = BaseModel::table('user')->updateDB();
 
 		$num01 = 10;
 		return $num01;
