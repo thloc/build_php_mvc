@@ -51,5 +51,69 @@ class BaseModel extends DBConnect {
 		$sql .= ' FROM '. $this->from .' '. $this->query;
 		return $this->selectQuery($sql);
 	}
+
+	public function insertDB(array $params) {
+		if (empty($params)) {
+			return false;
+		}
+
+        if (! is_array(reset($params))) {
+            $params = [$params];
+        } else {
+            foreach ($params as $key => $value) {
+                ksort($value);
+                $params[$key] = $value;
+            }
+        }
+
+        $sql = $this->compileInsert($params);
+
+		echo "<pre>";
+		print_r($sql);
+		die;
+	}
+
+
+	public function compileInsert(array $values) {
+	    if (! is_array(reset($values))) {
+	        $values = [$values];
+	    }
+
+	    $columns = $this->columnize(array_keys(reset($values)));
+	    $parameters = $this->parameterize($values);
+	    return "INSERT INTO $this->from ($columns) values $parameters";
+	}
+
+	public function columnize(array $columns) {
+        return implode(', ', $columns);
+    }
+
+    public function parameterize(array $values) {
+    	$dataInsert = '';
+    	$countValues = count($values);
+
+    	foreach ($values as $keyRecord => $record) {
+    		$data = array_values($record);
+    		$dataInsert .= '(';
+    		$countData = count($data);
+    		foreach ($data as $key => $value) {
+    			if (is_string($value)) {
+    				$dataInsert .= '"'.$value.'"';
+    			} else {
+    				$dataInsert .= $value;
+    			}
+
+    			if ($key < $countData - 1) {
+    				$dataInsert .= ', ';
+    			}
+    		}
+    		$dataInsert .= ')';
+
+    		if ($keyRecord < $countValues - 1) {
+    			$dataInsert .= ', ';
+    		}
+    	}
+    	return $dataInsert;
+    }
 }
 ?>
